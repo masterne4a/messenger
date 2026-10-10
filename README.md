@@ -20,7 +20,7 @@ npm install
 npm run dev
 ```
 
-Адрес API задаётся через `VITE_API_URL`
+Адрес API задаётся через `VITE_API_URL` (см. `.env` для локального запуска).
 
 ## Скрипты
 
