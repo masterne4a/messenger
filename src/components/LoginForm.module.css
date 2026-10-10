@@ -1,0 +1,59 @@
+.form {
+  margin: auto;
+  width: 320px;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.title {
+  margin: 0 0 8px;
+  font-size: 20px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 14px;
+}
+
+.field input {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font: inherit;
+}
+
+.field input:focus {
+  outline: 2px solid #4a90e2;
+  outline-offset: -1px;
+}
+
+.button {
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  background: #4a90e2;
+  color: white;
+  font: inherit;
+  cursor: pointer;
+}
+
+.button:disabled {
+  background: #b0c4de;
+  cursor: not-allowed;
+}
+
+.error {
+  margin: 0;
+  padding: 8px 12px;
+  border-radius: 6px;
+  background: #fdecea;
+  color: #b71c1c;
+  font-size: 13px;
+}

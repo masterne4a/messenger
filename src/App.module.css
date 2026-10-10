@@ -1,0 +1,12 @@
+.app {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family: system-ui, sans-serif;
+}
+
+.loading {
+  margin: auto;
+  color: #888;
+  font-size: 14px;
+}
