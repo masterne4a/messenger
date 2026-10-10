@@ -1,17 +1,17 @@
-# GreenAPI Messenger
+Messenger
 
-Минимальный веб-мессенджер для отправки и приёма сообщений WhatsApp через [GreenAPI](https://green-api.com/).
+Минимальный веб-мессенджер для отправки и приёма сообщений MAX через GreenAPI.
 
 ## Возможности
 
-- Вход по `idInstance` и `apiTokenInstance` (сохраняются в `localStorage`).
+- Вход по `idInstance` и `apiTokenInstance` (сохраняются в `sessionStorage` в рамках вкладки).
 - Добавление чата по номеру телефона (проверка через `checkAccount`).
 - Отправка текстовых сообщений.
 - Приём входящих сообщений через опрос `receiveNotification` + `deleteNotification`.
 
 ## Стек
 
-React 19, TypeScript, Vite. Стили — CSS-модули, состояние — `localStorage` + React-хуки, без внешних стейт-менеджеров.
+React 19, TypeScript, Vite. Стили — CSS-модули, состояние — React-хуки (`useState`), креды — `sessionStorage`, без внешних стейт-менеджеров.
 
 ## Запуск
 

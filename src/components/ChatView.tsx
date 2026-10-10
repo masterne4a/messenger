@@ -3,54 +3,52 @@ import type { GreenApi } from '../api/api'
 import { GreenApiError } from '../api/api'
 import type { IncomingNotification } from '../api/types'
 import { isTextMessageData } from '../api/types'
+import type { MessagesByChat } from '../api/types'
 import { useNotificationPolling } from '../hooks/useNotificationPolling'
-import { messagesStore, nowSeconds } from '../api/messages'
+import { appendTo, nowSeconds } from '../api/messages'
 import { MESSAGE_MAX_LENGTH, ID_ATTRIBUTE } from '../api/constants'
 import styles from './ChatView.module.css'
 
 type Props = {
   api: GreenApi
   activeChatId: string | null
-  tick: number
-  onTick: () => void
   onLogout: () => void
 }
 
-export function ChatView({ api, activeChatId, tick, onTick, onLogout }: Props) {
+export function ChatView({ api, activeChatId, onLogout }: Props) {
   const [text, setText] = useState('')
+  const [all, setAll] = useState<MessagesByChat>({})
   const [error, setError] = useState<string | null>(null)
   const listRef = useRef<HTMLDivElement>(null)
 
-  const handleNotification = useCallback(
-    (n: IncomingNotification) => {
-      if (n.typeWebhook !== 'incomingMessageReceived') return
-      const chatId = n.senderData.chatId
-      const { messageData } = n
-      // принимаем только текстовые сообщения
-      if (!chatId || !messageData || !isTextMessageData(messageData)) return
+  const handleNotification = useCallback((n: IncomingNotification) => {
+    if (n.typeWebhook !== 'incomingMessageReceived') return
+    const chatId = n.senderData.chatId
+    const { messageData } = n
+    // принимаем только текстовые сообщения
+    if (!chatId || !messageData || !isTextMessageData(messageData)) return
 
-      messagesStore.append(chatId, {
+    setAll((prev) =>
+      appendTo(prev, chatId, {
         id: n.idMessage,
         from: 'them',
         text: messageData.textMessageData.textMessage,
         timestamp: n.timestamp,
       })
-      onTick()
-    },
-    [onTick]
-  )
+    )
+  }, [])
 
   useNotificationPolling({ api, onNotification: handleNotification, receiveTimeout: 10 })
 
   const chatId = activeChatId ?? ''
-  const messages = chatId ? messagesStore.get(chatId) : []
+  const messages = chatId ? (all[chatId] ?? []) : []
   const [sending, setSending] = useState(false)
 
   // автопрокрутка вниз при новом сообщении
   useEffect(() => {
     const el = listRef.current
     if (el) el.scrollTop = el.scrollHeight
-  }, [messages.length, chatId, tick])
+  }, [messages.length, chatId])
   async function sendMessage() {
     // убираем BOM и лишние пробелы; лимит 4000 символов, включая emoji
     const message = text.replace(/\uFEFF/g, '').trim()
@@ -61,14 +59,15 @@ export function ChatView({ api, activeChatId, tick, onTick, onLogout }: Props) {
 
     try {
       const res = await api.sendMessage({ chatId, message })
-      messagesStore.append(chatId, {
-        id: res.idMessage,
-        from: 'me',
-        text: message,
-        timestamp: nowSeconds(),
-      })
+      setAll((prev) =>
+        appendTo(prev, chatId, {
+          id: res.idMessage,
+          from: 'me',
+          text: message,
+          timestamp: nowSeconds(),
+        })
+      )
       setText('')
-      onTick()
     } catch (err) {
       if (err instanceof GreenApiError) {
         setError(`[${err.code}] ${err.message}`)

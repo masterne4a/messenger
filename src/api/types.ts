@@ -1,3 +1,14 @@
+export type Chat = { chatId: string; phone: number }
+
+export type Message = {
+  id: string
+  from: 'me' | 'them'
+  text: string
+  timestamp: number
+}
+
+export type MessagesByChat = Record<string, Message[]>
+
 export type SendMessageRequest = {
   chatId: string
   message: string

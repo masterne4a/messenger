@@ -2,8 +2,7 @@ import { useState, type SyntheticEvent } from 'react'
 import { isValidPhoneNumber } from '../api/validate'
 import type { GreenApi } from '../api/api'
 import { GreenApiError, isCheckAccountError } from '../api/api'
-import type { Chat } from '../api/chats'
-import { chatsStore } from '../api/chats'
+import type { Chat } from '../api/types'
 import { ID_ATTRIBUTE } from '../api/constants'
 import styles from './Sidebar.module.css'
 
@@ -14,7 +13,7 @@ type Props = {
 }
 
 export function Sidebar({ api, activeChatId, onSelectChat }: Props) {
-  const [chats, setChats] = useState<Chat[]>(() => chatsStore.load())
+  const [chats, setChats] = useState<Chat[]>([])
   const [phone, setPhone] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -55,9 +54,7 @@ export function Sidebar({ api, activeChatId, onSelectChat }: Props) {
       }
 
       const chat: Chat = { chatId, phone: phoneNumber }
-      const next = [...chats, chat]
-      setChats(next)
-      chatsStore.save(next)
+      setChats([...chats, chat])
       onSelectChat(chat.chatId)
       setPhone('')
     } catch (err) {

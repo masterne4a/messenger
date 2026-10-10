@@ -11,7 +11,6 @@ type Props = {
 
 export function Messenger({ api, onLogout }: Props) {
   const [activeChatId, setActiveChatId] = useState<string | null>(null)
-  const [tick, setTick] = useState(0) // для обновления активного чата при новых сообщениях
 
   return (
     <div className={styles.layout}>
@@ -20,13 +19,7 @@ export function Messenger({ api, onLogout }: Props) {
       </aside>
 
       <main className={styles.chat}>
-        <ChatView
-          api={api}
-          activeChatId={activeChatId}
-          tick={tick}
-          onTick={() => setTick((t) => t + 1)}
-          onLogout={onLogout}
-        />
+        <ChatView api={api} activeChatId={activeChatId} onLogout={onLogout} />
       </main>
     </div>
   )

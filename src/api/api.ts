@@ -1,4 +1,4 @@
-import type { Credentials } from './store'
+import type { Credentials } from './credentials'
 import type {
   SendMessageRequest,
   SendMessageResponse,

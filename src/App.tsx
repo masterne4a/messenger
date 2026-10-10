@@ -1,22 +1,22 @@
 import { useEffect, useState } from 'react'
 import styles from './App.module.css'
 import type { GreenApi } from './api/api'
-import { credentialsStore } from './api/store'
-import type { Credentials } from './api/store'
+import { credentials } from './api/credentials'
+import type { Credentials } from './api/credentials'
 import { makeApi } from './api/api'
 import { Messenger } from './components/Messenger'
 import { LoginForm } from './components/LoginForm'
 
 function App() {
   const [api, setApi] = useState<GreenApi | null>(() => {
-    const saved = credentialsStore.load()
+    const saved = credentials.load()
     return saved ? makeApi(saved) : null
   })
-  const [checking, setChecking] = useState(() => Boolean(credentialsStore.load()))
+  const [checking, setChecking] = useState(() => Boolean(credentials.load()))
 
   // сохранённые креды проверяем перед показом мессенджера
   useEffect(() => {
-    const saved = credentialsStore.load()
+    const saved = credentials.load()
     if (!saved) return
 
     let cancelled = false
@@ -28,7 +28,7 @@ function App() {
       })
       .catch(() => {
         if (cancelled) return
-        credentialsStore.clear()
+        credentials.clear()
         setApi(null)
       })
       .finally(() => {
@@ -41,12 +41,12 @@ function App() {
   }, [])
 
   function handleLogin(creds: Credentials) {
-    credentialsStore.save(creds)
+    credentials.save(creds)
     setApi(makeApi(creds))
   }
 
   function handleLogout() {
-    credentialsStore.clear()
+    credentials.clear()
     setApi(null)
   }
 
